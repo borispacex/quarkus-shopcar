@@ -11,7 +11,7 @@ public class Car {
     @Column(length = 16)
     String model;
     @Column(length = 16)
-    String bodytype;
+    String bodyType;
     @Column(length = 16)
     String brand;
     String year;
@@ -41,12 +41,12 @@ public class Car {
         this.model = model;
     }
 
-    public String getBodytype() {
-        return bodytype;
+    public String getBodyType() {
+        return bodyType;
     }
 
-    public void setBodytype(String bodytype) {
-        this.bodytype = bodytype;
+    public void setBodyType(String bodyType) {
+        this.bodyType = bodyType;
     }
 
     public String getBrand() {

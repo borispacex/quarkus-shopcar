@@ -6,6 +6,7 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.redeasy.shopcar.entity.Car;
+import org.redeasy.shopcar.entity.Shop;
 import org.redeasy.shopcar.repository.CarRepository;
 import org.redeasy.shopcar.repository.ShopRepository;
 
@@ -42,7 +43,7 @@ public class CarResource {
     @Produces(MediaType.APPLICATION_JSON)
     @Path("/brand/{brand}")
     public Response getByBrand(@PathParam("brand") String brand) {
-        List<Car> cars = carRepository.list("SELECT c FROM Car WHERE c.brand = ?1 ORDER BY id", brand);
+        List<Car> cars = carRepository.list("SELECT c FROM Car c WHERE c.brand = ?1 ORDER BY id", brand);
         return Response.ok(cars).build();
     }
 
@@ -70,12 +71,29 @@ public class CarResource {
 
     }
 
-    @GET
-    @Produces(MediaType.APPLICATION_JSON)
+    @PUT
     @Path("/{idCar}/shop/{idShop}")
+    @Transactional
+    @Produces(MediaType.APPLICATION_JSON)
     public Response addToShop(@PathParam("idCar") Long idCar, @PathParam("idShop") Long idShop) {
-        
+        Shop shop = shopRepository.findById(idShop);
+        if (shopRepository.isPersistent(shop)) {
+            Car car = carRepository.findById(idCar);
+            if (carRepository.isPersistent(car)) {
+                car.setShop(shop);
+                carRepository.persist(car);
+
+                List<Car> cars = shop.getCars();
+                cars.add(car);
+                shop.setCars(cars);
+                shopRepository.persist(shop);
+
+                return Response.status(Response.Status.OK).build();
+            }
+        }
         return Response.status(Response.Status.BAD_REQUEST).build();
+
+
     }
 
     // Obtenr el numero de autos
