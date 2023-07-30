@@ -93,7 +93,6 @@ public class CarResource {
         }
         return Response.status(Response.Status.BAD_REQUEST).build();
 
-
     }
 
     // Obtenr el numero de autos
